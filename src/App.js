@@ -1,6 +1,5 @@
 import logo from './logo.svg';
 import './App.css';
-import {useEffect,useState} from 'react'
 import NextRace from './components/NextRace/NextRace'
 
 function App() {
