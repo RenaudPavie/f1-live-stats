@@ -7,28 +7,47 @@ function NextRace() {
     const [infoFromAPI, setInfoFromAPI] = useState([]);
     const [localDate, setLocalDate] = useState(null);
     const requestOptions = {
-      method: 'GET',
-      redirect: 'follow'
+        method: 'GET',
+        redirect: 'follow'
     };
-    const getLocalDate = (d,t) => {
-        let newLocalDate = new Date(d+"T"+t).toLocaleString("fr-FR", {timeZone: "Europe/Paris"})
-        return newLocalDate
-    }
     useEffect(() => {
       fetch("https://ergast.com/api/f1/current/next.json",requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
+            console.log(result);
             setIsLoaded(true);
             setInfoFromAPI(result.MRData.RaceTable.Races[0]);
-            setLocalDate(getLocalDate(result.MRData.RaceTable.Races[0].date,result.MRData.RaceTable.Races[0].time))
-
+            let fixedDate = new Date(result.MRData.RaceTable.Races[0].date+'T'+result.MRData.RaceTable.Races[0].time)
+            setLocalDate(fixedDate)
         },
         (error) => {
             setIsLoaded(true);
             setError(error);
         })
     }, [])
+
+    const calculateTimeLeft = (d) => {
+        const difference = d - new Date();
+        let timeLeft = {};
+
+        if (difference > 0) {
+          timeLeft = {
+            days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((difference / 1000 / 60) % 60),
+            seconds: Math.floor((difference / 1000) % 60)
+          };
+        }
+        return timeLeft
+    }
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(localDate));
+    useEffect(() => {
+        const timer = setTimeout(() => {
+          setTimeLeft(calculateTimeLeft(localDate));
+        }, 1000);
+        return () => clearTimeout(timer);
+    });
 
     if (error) {
         return <div>Erreur : {error.message}</div>;
@@ -37,9 +56,12 @@ function NextRace() {
     } else {
         return (
             <div className="nextRace">
-                {console.log(infoFromAPI)}
-                <p>{infoFromAPI && infoFromAPI.raceName} - {infoFromAPI && infoFromAPI.Circuit.circuitName}</p>
-                <p>{localDate && localDate}</p>
+                <h2>{infoFromAPI && infoFromAPI.raceName} - {infoFromAPI && infoFromAPI.Circuit.circuitName}</h2>
+                <p>
+                    {timeLeft && `${Object.keys(timeLeft).length === 0 ? 'Calculating...' : 
+                        `J : ${timeLeft.days} H : ${timeLeft.hours} M : ${timeLeft.minutes} S : ${timeLeft.seconds}`
+                    }`} 
+                </p>
             </div>
         )
     }
