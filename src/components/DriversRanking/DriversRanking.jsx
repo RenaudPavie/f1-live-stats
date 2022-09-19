@@ -17,9 +17,7 @@ function DriversRanking() {
             (result) => {
             setIsLoaded(true);
             const data = result.MRData.StandingsTable.StandingsLists[0].DriverStandings;
-            // console.log(data)
-            setInfoFromAPI(data);
-            
+            setInfoFromAPI(data);  
         },
         (error) => {
             setIsLoaded(true);
@@ -38,7 +36,6 @@ function DriversRanking() {
             <div className="DriversRanking">
                 <table>
                     <tbody>
-                        {/* {infoFromAPI && console.log(infoFromAPI)} */}
                         {infoFromAPI && infoFromAPI.map((data,index) => {
                             return <tr key={index}>
                                 <td>{data.Driver.code}</td>

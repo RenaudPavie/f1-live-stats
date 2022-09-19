@@ -17,7 +17,6 @@ function ConstructorsRanking() {
             (result) => {
             setIsLoaded(true);
             const data = result.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
-            console.log(data)
             setInfoFromAPI(data);
             
         },
@@ -38,7 +37,6 @@ function ConstructorsRanking() {
             <div className="ConstructorsRanking">
                 <table>
                     <tbody>
-                        {infoFromAPI && console.log(infoFromAPI)}
                         {infoFromAPI && infoFromAPI.map((data,index) => {
                             return <tr key={index}>
                                 <td>{data.position}</td>
