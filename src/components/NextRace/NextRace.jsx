@@ -16,7 +16,7 @@ function NextRace() {
         redirect: 'follow'
     };
     const getNextSession = (arr) => {
-        arr.sort((a,b)=>a.date - b.date);
+        arr.sort((a,b) => a.date - b.date);
         let newArr = arr.filter(x => {
             return x.date > new Date()
         })
@@ -27,10 +27,10 @@ function NextRace() {
         .then(res => res.json())
         .then(
             (result) => {
-            // console.log(result);
             setIsLoaded(true);
             const data = result.MRData.RaceTable.Races[0];
             setInfoFromAPI(data);
+            // store every session during the week
             let firstPracticeDate = new Date(data.FirstPractice.date+'T'+data.FirstPractice.time)
             let secondPracticeDate = new Date(data.SecondPractice.date+'T'+data.SecondPractice.time)
             let qualifyingDate = new Date(data.Qualifying.date+'T'+data.Qualifying.time)
@@ -69,9 +69,9 @@ function NextRace() {
                         date: sprintRaceDate
                     })
             }
+            // call getNextSession() to detect in coming session
             let filteredArray = getNextSession(dateArr)
-            console.log(filteredArray)
-            // setLocalDate(raceDate)
+            // store obj containing next session data
             setLocalDate(filteredArray)
         },
         (error) => {
@@ -94,6 +94,7 @@ function NextRace() {
         }
         return timeLeft
     }
+    // call calculateTimeLeft and update state every second
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(localDate));
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -111,6 +112,7 @@ function NextRace() {
             <div className="nextRace">
                 <h2>{infoFromAPI && infoFromAPI.raceName} - {infoFromAPI && infoFromAPI.Circuit.circuitName}</h2>
                 <p><strong>{localDate && localDate[0].session}</strong> - 
+                    {/* Display timer before the next session */}
                     {timeLeft && `${Object.keys(timeLeft).length === 0 ? 'En cours de calcul...' : 
                         ` J : ${timeLeft.days} H : ${timeLeft.hours} M : ${timeLeft.minutes} S : ${timeLeft.seconds}`
                     }`} 
