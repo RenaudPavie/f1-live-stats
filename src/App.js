@@ -1,5 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import NextRace from "./components/NextRace/NextRace";
 import DriversRanking from "./components/DriversRanking/DriversRanking";
 import ConstructorsRanking from "./components/ConstructorsRanking/ConstructorsRanking";
@@ -19,6 +20,8 @@ function App() {
           <Col>
             <NextRace />
           </Col>
+        </Row>
+        <Row>
           <Col>
             <DriversRanking />{" "}
           </Col>
