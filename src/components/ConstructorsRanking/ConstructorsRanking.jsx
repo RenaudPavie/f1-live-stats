@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./ConstructorsRanking.css";
 
+import Table from 'react-bootstrap/Table';
+
 function ConstructorsRanking() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [infoFromAPI, setInfoFromAPI] = useState([]);
 
-  const requestOptions = {
-    method: "GET",
-    redirect: "follow",
-  };
   useEffect(() => {
     fetch(
       "https://ergast.com/api/f1/current/constructorStandings.json",
-      requestOptions
-    )
+      {
+        method: "GET",
+        redirect: "follow",
+      })
       .then((res) => res.json())
       .then(
         (result) => {
@@ -37,7 +37,14 @@ function ConstructorsRanking() {
   } else {
     return (
       <div className="ConstructorsRanking">
-        <table>
+        <Table bordered variant="dark">
+        <thead>
+            <tr>
+              <th>Position</th>
+              <th>Team</th>
+              <th>Points</th>
+            </tr>
+          </thead>
           <tbody>
             {infoFromAPI &&
               infoFromAPI.map((data, index) => {
@@ -50,7 +57,7 @@ function ConstructorsRanking() {
                 );
               })}
           </tbody>
-        </table>
+        </Table>
       </div>
     );
   }

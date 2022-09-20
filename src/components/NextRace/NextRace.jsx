@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./NextRace.css";
 
+import Table from "react-bootstrap/Table";
+
 function NextRace() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -11,10 +13,6 @@ function NextRace() {
       date: "",
     },
   ]);
-  const requestOptions = {
-    method: "GET",
-    redirect: "follow",
-  };
   const getNextSession = (arr) => {
     arr.sort((a, b) => a.date - b.date);
     let newArr = arr.filter((x) => {
@@ -23,7 +21,10 @@ function NextRace() {
     return newArr;
   };
   useEffect(() => {
-    fetch("https://ergast.com/api/f1/current/next.json", requestOptions)
+    fetch("https://ergast.com/api/f1/current/next.json", {
+        method: "GET",
+        redirect: "follow",
+      })
       .then((res) => res.json())
       .then(
         (result) => {
@@ -123,16 +124,37 @@ function NextRace() {
           {infoFromAPI && infoFromAPI.raceName} -{" "}
           {infoFromAPI && infoFromAPI.Circuit.circuitName}
         </h2>
-        <p>
+        {/* Display timer before the next session */}
+        {/* <p>
           <strong>{localDate && localDate[0].session}</strong> -
-          {/* Display timer before the next session */}
           {timeLeft &&
             `${
               Object.keys(timeLeft).length === 0
                 ? "En cours de calcul..."
                 : ` J : ${timeLeft.days} H : ${timeLeft.hours} M : ${timeLeft.minutes} S : ${timeLeft.seconds}`
             }`}
-        </p>
+        </p> */}
+
+        <Table bordered variant="dark">
+            <thead>
+                <tr>
+                    <th>Session</th>
+                    <th>Jours</th>
+                    <th>Heures</th>
+                    <th>Minutes</th>
+                    <th>Secondes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>{localDate && localDate[0].session}</strong></td>
+                    <td>{timeLeft && timeLeft.days}</td>
+                    <td>{timeLeft && timeLeft.hours}</td>
+                    <td>{timeLeft && timeLeft.minutes}</td>
+                    <td>{timeLeft && timeLeft.seconds}</td>
+                </tr>
+            </tbody>
+        </Table>
       </div>
     );
   }
